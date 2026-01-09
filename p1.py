@@ -6,10 +6,8 @@ FILE_PATH = "expenses.csv"
 
 
 def initialize_file():
-    """
-    Creates the expenses CSV file if it does not exist.
-    This ensures the program runs safely the first time.
-    """
+    
+
     if not os.path.exists(FILE_PATH):
         with open(FILE_PATH, "w", newline="") as file:
             writer = csv.writer(file)
@@ -17,17 +15,15 @@ def initialize_file():
 
 
 def add_expense():
-    """
-    Takes user input and stores a new expense in the CSV file.
-    """
-    print("\n📝 Add New Expense")
+   
+    print("\n--- Add New Expense ---")
     date = input("Enter date (YYYY-MM-DD): ")
     category = input("Enter category (Food / Travel / Bills etc): ")
 
     try:
         amount = float(input("Enter amount spent: "))
     except ValueError:
-        print("❌ Amount must be a number.")
+        print("Error: Amount must be a number.")
         return
 
     description = input("Enter short description: ")
@@ -36,14 +32,12 @@ def add_expense():
         writer = csv.writer(file)
         writer.writerow([date, category, amount, description])
 
-    print("✅ Expense saved successfully!")
+    print("Expense added successfully.")
 
 
 def analyze_expense():
-    """
-    Displays total expense for each category.
-    """
-    print("\n📊 Category-wise Expense Analysis")
+    
+    print("\n--- Category-wise Expense Summary ---")
     category_total = {}
 
     with open(FILE_PATH, "r") as file:
@@ -54,17 +48,15 @@ def analyze_expense():
             category_total[category] = category_total.get(category, 0) + amount
 
     if not category_total:
-        print("⚠️ No expenses found.")
+        print("No expenses found.")
         return
 
     for category, total in category_total.items():
-        print(f"• {category}: ₹{total}")
+        print(f"{category}: ₹{total}")
 
 
 def category_pie_chart():
-    """
-    Shows category-wise expenses using a pie chart.
-    """
+    
     category_total = {}
 
     with open(FILE_PATH, "r") as file:
@@ -75,34 +67,28 @@ def category_pie_chart():
             category_total[category] = category_total.get(category, 0) + amount
 
     if not category_total:
-        print("⚠️ No data available for visualization.")
+        print("No data available for chart.")
         return
 
     plt.figure()
-    plt.pie(
-        category_total.values(),
-        labels=category_total.keys(),
-        autopct="%1.1f%%"
-    )
+    plt.pie(category_total.values(), labels=category_total.keys(), autopct="%1.1f%%")
     plt.title("Category-wise Expense Distribution")
     plt.show()
 
 
 def monthly_bar_chart():
-    """
-    Displays monthly total expenses in a bar chart.
-    """
+    
     monthly_total = {}
 
     with open(FILE_PATH, "r") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            month = row["date"][:7]   # Extract YYYY-MM
+            month = row["date"][:7]  # YYYY-MM
             amount = float(row["amount"])
             monthly_total[month] = monthly_total.get(month, 0) + amount
 
     if not monthly_total:
-        print("⚠️ No monthly data found.")
+        print("No monthly data found.")
         return
 
     plt.figure()
@@ -114,16 +100,14 @@ def monthly_bar_chart():
 
 
 def budget_alert():
-    """
-    Checks whether monthly expenses exceed the given budget.
-    """
-    print("\n🚨 Budget Check")
+    
+    print("\n--- Budget Check ---")
     month = input("Enter month (YYYY-MM): ")
 
     try:
         budget = float(input("Enter monthly budget amount: "))
     except ValueError:
-        print("❌ Budget must be a number.")
+        print("Error: Budget must be a number.")
         return
 
     total_spent = 0
@@ -134,18 +118,16 @@ def budget_alert():
             if row["date"].startswith(month):
                 total_spent += float(row["amount"])
 
-    print(f"\n💰 Total spent in {month}: ₹{total_spent}")
+    print(f"Total spent in {month}: ₹{total_spent}")
 
     if total_spent > budget:
-        print("🚨 Alert! You have exceeded your budget.")
+        print("Warning: Budget limit exceeded.")
     else:
-        print("✅ Good job! You are within your budget.")
+        print("You are within the budget.")
 
 
 def export_report():
-    """
-    Exports a monthly expense summary to a text file.
-    """
+    
     month = input("Enter month (YYYY-MM): ")
     category_total = {}
 
@@ -158,27 +140,25 @@ def export_report():
                 category_total[category] = category_total.get(category, 0) + amount
 
     if not category_total:
-        print("⚠️ No data available for this month.")
+        print("No data available for this month.")
         return
 
     report_name = f"expense_report_{month}.txt"
     with open(report_name, "w") as file:
         file.write(f"Expense Report for {month}\n")
-        file.write("=" * 35 + "\n")
+        file.write("-" * 35 + "\n")
         for category, total in category_total.items():
             file.write(f"{category}: ₹{total}\n")
 
-    print(f"📁 Report successfully saved as '{report_name}'")
+    print(f"Report saved successfully as '{report_name}'")
 
 
 def main():
-    """
-    Main menu-driven program.
-    """
+    
     initialize_file()
 
     while True:
-        print("\n====== 💸 Personal Expense Tracker ======")
+        print("\n====== Personal Expense Tracker ======")
         print("1. Add Expense")
         print("2. View Category-wise Summary")
         print("3. View Category Pie Chart")
@@ -202,13 +182,12 @@ def main():
         elif choice == "6":
             export_report()
         elif choice == "7":
-            print("👋 Thank you for using the Expense Tracker!")
+            print("Thank you for using the Expense Tracker.")
             break
         else:
-            print("❌ Invalid choice. Please try again.")
+            print("Invalid choice. Please try again.")
 
 
 if __name__ == "__main__":
     main()
-
 
